@@ -11,51 +11,31 @@ dotenv.config();
 
 const app = express();
 
-function getAllowedOrigins() {
-  const origins = [
-    process.env.CLIENT_URL,
-    ...(process.env.CLIENT_URLS?.split(',').map((o) => o.trim()) || []),
-  ].filter(Boolean);
+// Simple, reliable CORS setup
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
-  if (origins.length === 0 && process.env.NODE_ENV !== 'production') {
-    origins.push('http://localhost:5173');
-  }
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
 
-  return [...new Set(origins)];
-}
+    // Allow any vercel.app domain (covers all preview deployments)
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
 
-function isOriginAllowed(origin) {
-  if (!origin) return true;
+    // Allow explicitly listed origins
+    if (allowedOrigins.includes(origin)) return callback(null, true);
 
-  const allowed = getAllowedOrigins();
-  if (allowed.includes(origin)) return true;
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
+  credentials: true,
+};
 
-  if (process.env.ALLOW_VERCEL_PREVIEWS === 'true') {
-    try {
-      const { hostname } = new URL(origin);
-      return hostname.endsWith('.vercel.app');
-    } catch {
-      return false;
-    }
-  }
-
-  return false;
-}
-
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (isOriginAllowed(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS blocked for origin: ${origin}`));
-      }
-    },
-    credentials: true,
-  })
-);
-
-app.options('*', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // 👈 same config for preflight
 
 app.use(async (req, res, next) => {
   try {
