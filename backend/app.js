@@ -35,7 +35,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // 👈 same config for preflight
+app.options('*', cors(corsOptions));
 
 app.use(async (req, res, next) => {
   try {
