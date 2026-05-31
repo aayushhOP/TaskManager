@@ -29,7 +29,7 @@ Edit `backend/.env`:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb://127.0.0.1:27017/taskmanager
+MONGODB_URI=mongodb://127.0.0.1:27017/TaskManager
 JWT_SECRET=change_this_to_a_long_random_string
 CLIENT_URL=http://localhost:5173
 ```
@@ -93,3 +93,9 @@ cd frontend && npm run build
 ```
 
 Serve the `frontend/dist` folder with any static host and point `VITE_API_URL` at your deployed API. Ensure `CLIENT_URL` on the backend matches your frontend origin for CORS.
+
+## Deploy to Vercel
+
+Deploy **backend** and **frontend** as two Vercel projects (root directories `backend` and `frontend`). Use MongoDB Atlas for the database.
+
+**Full step-by-step guide:** [DEPLOY.md](./DEPLOY.md)

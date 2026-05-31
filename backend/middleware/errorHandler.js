@@ -20,8 +20,22 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ message: 'Invalid resource ID.' });
   }
 
+  let message = err.message || 'Server error';
+
+  if (message.includes('MONGODB_URI')) {
+    message = 'Database not configured. Set MONGODB_URI in environment variables.';
+  } else if (
+    message.includes('MongoServerSelectionError') ||
+    message.includes('ECONNREFUSED') ||
+    message.includes('ENOTFOUND') ||
+    message.includes('timed out')
+  ) {
+    message =
+      'Unable to connect to MongoDB. Check MONGODB_URI, Atlas network access (IP whitelist), and that the cluster is running.';
+  }
+
   res.status(statusCode).json({
-    message: err.message || 'Server error',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    message,
+    ...(process.env.NODE_ENV === 'development' && { detail: err.message, stack: err.stack }),
   });
 };
