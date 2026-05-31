@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { tasksApi, ApiError } from '../services/api';
 import Navbar from '../components/Navbar';
+import DashboardHero from '../components/DashboardHero';
 import TaskBoard from '../components/TaskBoard';
 import TaskForm from '../components/TaskForm';
 import Alert from '../components/Alert';
@@ -99,20 +100,28 @@ export default function Dashboard() {
       <Navbar />
 
       <main className="dashboard-main">
-        <div className="dashboard-toolbar">
-          <div>
-            <h2>Your tasks</h2>
-            <p className="dashboard-subtitle">
-              {tasks.length} task{tasks.length !== 1 ? 's' : ''} across three stages
-            </p>
+        {!loading && <DashboardHero tasks={tasks} />}
+
+        <div className="dashboard-toolbar animate-fade-in">
+          <div className="dashboard-toolbar-text">
+            <h3>Task board</h3>
+            <p className="dashboard-subtitle">Organize work across three stages</p>
           </div>
           {!showForm && !editingTask && (
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-primary btn-glow"
               onClick={() => setShowForm(true)}
             >
-              + New task
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 5v14M5 12h14"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              New task
             </button>
           )}
         </div>
@@ -120,7 +129,7 @@ export default function Dashboard() {
         <Alert message={error} onDismiss={() => setError(null)} />
 
         {showForm && (
-          <div className="form-panel">
+          <div className="form-panel animate-expand">
             <h3>New task</h3>
             <TaskForm
               onSubmit={handleCreate}
@@ -131,7 +140,7 @@ export default function Dashboard() {
         )}
 
         {editingTask && (
-          <div className="form-panel">
+          <div className="form-panel animate-expand">
             <h3>Edit task</h3>
             <TaskForm
               initial={editingTask}

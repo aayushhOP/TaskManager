@@ -42,7 +42,12 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card">
+      <div className="auth-bg-shapes" aria-hidden="true">
+        <span className="shape shape-1" />
+        <span className="shape shape-2" />
+        <span className="shape shape-3" />
+      </div>
+      <div className="auth-card animate-scale-in">
         <div className="auth-header">
           <span className="auth-logo">✓</span>
           <h1>Create account</h1>
