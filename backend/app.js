@@ -55,6 +55,8 @@ app.use(
   })
 );
 
+app.options('*', cors());
+
 app.use(async (req, res, next) => {
   try {
     await connectDB();
